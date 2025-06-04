@@ -41,9 +41,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -62,6 +65,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       
@@ -76,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserProfile = async (userId: string) => {
     try {
+      console.log('Fetching user profile for:', userId);
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -87,6 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      console.log('User profile fetched:', data);
       setProfile(data);
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -95,18 +101,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
+      console.log('Signing in user:', email);
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      if (error) console.error('Sign in error:', error);
       return { error };
     } catch (error) {
+      console.error('Sign in error:', error);
       return { error };
     }
   };
 
   const signUp = async (email: string, password: string, metadata = {}) => {
     try {
+      console.log('Signing up user:', email);
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.signUp({
@@ -117,17 +127,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           data: metadata
         }
       });
+      if (error) console.error('Sign up error:', error);
       return { error };
     } catch (error) {
+      console.error('Sign up error:', error);
       return { error };
     }
   };
 
   const signOut = async () => {
     try {
+      console.log('Signing out user');
       const { error } = await supabase.auth.signOut();
+      if (error) console.error('Sign out error:', error);
       return { error };
     } catch (error) {
+      console.error('Sign out error:', error);
       return { error };
     }
   };
@@ -136,6 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user) return { error: new Error('No authenticated user') };
 
     try {
+      console.log('Updating profile:', updates);
       const { error } = await supabase
         .from('user_profiles')
         .update(updates)
@@ -147,6 +163,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { error };
     } catch (error) {
+      console.error('Update profile error:', error);
       return { error };
     }
   };
