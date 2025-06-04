@@ -9,16 +9,256 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          new_values: Json | null
+          old_values: Json | null
+          parlour_id: string | null
+          resource_id: string | null
+          resource_type: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          parlour_id?: string | null
+          resource_id?: string | null
+          resource_type: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          parlour_id?: string | null
+          resource_id?: string | null
+          resource_type?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_parlour_id_fkey"
+            columns: ["parlour_id"]
+            isOneToOne: false
+            referencedRelation: "parlours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parlours: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_email: string
+          contact_phone: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          postal_code: string | null
+          province: string | null
+          registration_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_email: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          postal_code?: string | null
+          province?: string | null
+          registration_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_email?: string
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          postal_code?: string | null
+          province?: string | null
+          registration_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invitation_token: string
+          invited_by: string
+          parlour_id: string | null
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          invitation_token: string
+          invited_by: string
+          parlour_id?: string | null
+          role: Database["public"]["Enums"]["user_role"]
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invitation_token?: string
+          invited_by?: string
+          parlour_id?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_invitations_parlour_id_fkey"
+            columns: ["parlour_id"]
+            isOneToOne: false
+            referencedRelation: "parlours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_permissions: {
+        Row: {
+          action: string
+          created_at: string
+          granted_by: string | null
+          id: string
+          resource: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          resource: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          granted_by?: string | null
+          id?: string
+          resource?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          invited_by: string | null
+          last_login_at: string | null
+          last_name: string
+          parlour_id: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["user_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          first_name: string
+          id: string
+          invited_by?: string | null
+          last_login_at?: string | null
+          last_name: string
+          parlour_id?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["user_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          invited_by?: string | null
+          last_login_at?: string | null
+          last_name?: string
+          parlour_id?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["user_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_profiles_parlour_id_fkey"
+            columns: ["parlour_id"]
+            isOneToOne: false
+            referencedRelation: "parlours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_parlour: {
+        Args: { user_id: string }
+        Returns: string
+      }
+      get_user_role: {
+        Args: { user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_global_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
+      is_parlour_admin: {
+        Args: { user_id: string; target_parlour_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role:
+        | "global_admin"
+        | "parlour_admin"
+        | "sales_agent"
+        | "claims_officer"
+        | "crm_support"
+        | "underwriter"
+      user_status: "active" | "inactive" | "pending_activation" | "suspended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +373,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: [
+        "global_admin",
+        "parlour_admin",
+        "sales_agent",
+        "claims_officer",
+        "crm_support",
+        "underwriter",
+      ],
+      user_status: ["active", "inactive", "pending_activation", "suspended"],
+    },
   },
 } as const

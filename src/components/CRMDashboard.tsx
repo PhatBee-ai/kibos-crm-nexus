@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { LeadsKanban } from "./LeadsKanban";
 import { ClientInteractions } from "./ClientInteractions";
+import { UserProfile } from "./UserProfile";
 
 export function CRMDashboard() {
   return (
@@ -45,6 +46,7 @@ export function CRMDashboard() {
             <Bell className="w-5 h-5 text-slate-600" />
             <Badge className="absolute -top-1 -right-1 w-2 h-2 p-0 bg-red-500" />
           </div>
+          <UserProfile />
         </div>
       </header>
 
