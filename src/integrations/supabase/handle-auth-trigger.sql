@@ -15,7 +15,11 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'first_name', split_part(NEW.email, '@', 1)),
     COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
     COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'crm_support'::user_role),
-    (NEW.raw_user_meta_data->>'parlour_id')::UUID,
+    CASE 
+      WHEN NEW.raw_user_meta_data->>'parlour_id' IS NOT NULL 
+      THEN (NEW.raw_user_meta_data->>'parlour_id')::UUID 
+      ELSE NULL 
+    END,
     'active'::user_status
   )
   ON CONFLICT (id) DO NOTHING;
